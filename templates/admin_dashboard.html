@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <!-- logo -->
+    <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='KatzJCCLogo.png') }}" alt="Katz JCC Logo">
+    </div>
+
+    <h1>Admin Dashboard</h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-{{ messages[0][0] }}">
+                {{ messages[0][1] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="row mt-4">
+
+        <!-- Create Patient Form -->
+        <div class="col-md-6">
+            <h3>Create New Patient</h3>
+            <form method="POST">
+                <input type="hidden" name="action" value="create_patient">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" name="username" id="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Patient</button>
+            </form>
+        </div>
+
+        <!-- Assign Role Form -->
+        <div class="col-md-6">
+            <h3>Assign Role to User</h3>
+            <form method="POST">
+                <input type="hidden" name="action" value="assign_role">
+                <div class="mb-3">
+                    <label for="user_id" class="form-label">Select User</label>
+                    <select class="form-select" name="user_id" id="user_id" required>
+                        <option value="">Choose a user</option>
+                        {% for user in users %}
+                            <option value="{{ user.user_id }}">{{ user.username }} ({{ user.role }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="new_role" class="form-label">New Role</label>
+                    <select class="form-select" name="new_role" id="new_role" required>
+                        <option value="admin">Admin </option>
+                        <option value="patient">Patient</option>
+                        <option value="coach">Coach </option>
+
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-secondary">Assign Role</button>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Users List -->
+    <h3>Users List</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.user_id }}</td>  <!-- ID -->
+                    <td>{{ user.username }}</td>  <!-- Username -->
+                    <td>{{ user.role }}</td>  <!-- Role -->
+
+                    <!-- Assign Role Form for Each User -->
+                    <td>
+                        <form action="{{ url_for('admin.admin_dashboard') }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="action" value="assign_role">
+                            <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                            <select name="new_role" required>
+                                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                <option value="patient" {% if user.role == 'patient' %}selected{% endif %}>Patient</option>
+                                <option value="coach" {% if user.role == 'coach' %}selected{% endif %}>Coach</option>
+                            </select>
+                            <button type="submit" class="btn btn-info btn-sm">Assign Role</button>
+                        </form>
+
+                        <!-- Delete User Form -->
+                        <form action="{{ url_for('admin.admin_dashboard') }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete the user?');">
+
+                            <input type="hidden" name="action" value="delete_user">
+                            <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  <td>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm">Logout</a>
+    <a href="{{ url_for('admin.list_patients') }}" class="btn btn-secondary"> List of Patients</a>
+      <a href="{{ url_for('admin.list_coaches') }}" class="btn btn-secondary"> List of Coaches</a>
+    <!-- Link to Manage Classes page -->
+    <a href="{{ url_for('admin_classes.manage_classes') }}" class="btn btn-primary"> Manage Classes</a>
+                    </td>
+</div>
+</body>
+</html>

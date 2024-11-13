@@ -1,0 +1,106 @@
+/* <uniquifier>: Use a unique and descriptive class name */
+/* <weight>: Use a value from 400 to 700 */
+
+.afacad-unique-class {
+    font-family: "Afacad", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  input[type=submit] {
+      width: 200px;
+      font-size: 24px;                /* Increase the size of the header */
+      font-family: Afacad, sans-serif;  /* Use a clean, professional font */
+  
+  }
+  
+  button {
+      width: 200px;
+      font-size: 24px;                /* Increase the size of the header */
+      font-family: Afacad, sans-serif;  /* Use a clean, professional font */
+  }
+  
+  body {
+      font-family: Afacad, sans-serif;  /* Use a clean, professional font */
+      background-color: #f4f4f4;      /* Light background color for contrast */
+      margin: 0;                      /* Remove default margin */
+      padding: 0;                     /* Remove default padding */
+      display: flex;                  /* Use flexbox for centering */
+      justify-content: center;        /* Center horizontally */
+      align-items: center;            /* Center vertically */
+      height: 100vh;                  /* Full height of the viewport */
+  }
+
+  .container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .logo-container {
+    text-align: center;
+  }
+  
+  h2 {
+      font-size: 36px;                /* Increase the size of the header */
+      color: #333;                    /* Darker color for the header */
+      margin-bottom: 20px;            /* Space below the header */
+      text-align: center;              /* Center the header text */
+  }
+  
+  form {
+      background: white;              /* White background for the form */
+      font-size: 20px;
+      padding: 40px;                  /* Increased padding inside the form */
+      border-radius: 8px;             /* Rounded corners */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      width: 300px;                   /* Fixed width for the form */
+  }
+  
+  label {
+      font-size: 18px;                /* Larger font size for labels */
+      color: #555;                    /* Gray color for labels */
+      display: block;                 /* Make labels block-level */
+      margin-bottom: 5px;             /* Space below labels */
+  }
+  
+  .login {              /* Use flexbox for centering */
+      justify-content: center;        /* Center horizontally */
+      align-items: center;
+      text-align: center;
+  }
+  
+  img {
+      width: 300px;
+      display: block; /* Makes the image a block-level element */
+      margin-left: auto; /* Center the image */
+      margin-right: auto;
+  }
+  
+  
+  #chat-messages {
+              border: 1px solid #ccc;
+              height: 300px;
+              overflow-y: auto;
+              margin-bottom: 10px;
+              padding: 10px;
+  }
+  #chat-form {
+              display: flex;
+  }
+  #chat-input {
+              flex-grow: 1;
+              padding: 10px;
+  }
+  
+  
+  
+  
+  input[type="text"],
+  input[type="password"] {
+      width: 100%;
+  }
+
+ 

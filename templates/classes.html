@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Classes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Manage Classes</h2>
+
+    <!-- Add/Edit Class Form -->
+    <h4>Add or Edit Class</h4>
+    <form action="{{ url_for('admin_classes.manage_classes') }}" method="POST">
+        <input type="hidden" name="add_class" value="1"> <!-- Switch to "edit_class" dynamically if editing -->
+        <input type="hidden" name="class_id"> <!-- Populated by JavaScript when editing -->
+
+        <div class="form-group">
+            <label for="class_name">Class Name</label>
+            <input type="text" class="form-control" name="class_name" id="class_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" name="description" id="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="level">Level</label>
+            <select class="form-control" name="level" id="level" required>
+                <option value="one">One</option>
+                <option value="two">Two</option>
+                <option value="three">Three</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Duration (minutes)</label>
+            <input type="number" class="form-control" name="duration" id="duration" required>
+        </div>
+
+        <div class="form-group">
+            <label for="start_time">Start Time</label>
+            <input type="datetime-local" class="form-control" name="start_time" id="start_time" required>
+        </div>
+
+        <div class="form-group">
+            <label for="capacity">Capacity</label>
+            <input type="number" class="form-control" name="capacity" id="capacity" required>
+        </div>
+
+        <div class="form-group">
+            <label for="coach_id">Assign Coach (Optional)</label>
+            <select class="form-control" name="coach_id" id="coach_id">
+                <option value="">Select a coach</option>
+                {% for coach in coaches %}
+                    <option value="{{ coach.coach_id }}">{{ coach.last_name }} ({{ coach.username }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add/Update Class</button>
+    </form>
+
+    <!-- Classes Table with Registration and Coach Assignment Options -->
+    <h4 class="mt-5">Existing Classes</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Class Name</th>
+                <th>Level</th>
+                <th>Description</th>
+                <th>Duration</th>
+                <th>Start Time</th>
+                <th>Capacity</th>
+                <th>Assigned Coach</th>
+                <th>Registered Patients</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class in classes %}
+                <tr>
+                    <td>{{ class.class_name }}</td>
+                    <td>{{ class.level }}</td>
+                    <td>{{ class.description }}</td>
+                    <td>{{ class.duration }} mins</td>
+                    <td>{{ class.start_time }}</td>
+                    <td>{{ class.capacity }}</td>
+                    <td>
+                        {% if class.coach_id %}
+                            {% for coach in coaches %}
+                                {% if coach.coach_id == class.coach_id %}
+                                    <li>{{ coach.last_name }} {{ coach.username}}</li>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <em>Not Assigned</em>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <ul>
+                            {% for patient in class_registrations[class.class_id] %}
+                                <li>{{ patient.first_name }} {{ patient.last_name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <!-- Form to Register Patient -->
+                        <form action="{{ url_for('admin_classes.manage_classes') }}" method="POST" class="mb-2">
+                            <input type="hidden" name="register_patient" value="1">
+                            <input type="hidden" name="class_id" value="{{ class.class_id }}">
+                            <select name="patient_id" class="form-control mb-2" required>
+                                <option value="">Select Patient</option>
+                                {% for patient in patients %}
+                                    <option value="{{ patient.patient_id }}">{{ patient.first_name }} {{ patient.last_name }} ({{ patient.username }})</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-info btn-sm">Register Patient</button>
+                        </form>
+                        <!-- Form to Assign Coach -->
+                        <form action="{{ url_for('admin_classes.manage_classes') }}" method="POST">
+                            <input type="hidden" name="assign_coach" value="1">
+                            <input type="hidden" name="class_id" value="{{ class.class_id }}">
+                            <select name="coach_id" class="form-control mb-2" required>
+                                <option value="">Select Coach</option>
+                                {% for coach in coaches %}
+                                    <option value="{{ coach.coach_id }}">{{ coach.first_name }} {{ coach.last_name }} ({{ coach.username }})</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-success btn-sm">Assign Coach</button>
+                        </form>
+
+                        <!-- Form to Edit Class -->
+                        <form action="{{ url_for('admin_classes.manage_classes') }}" method="POST" class="mb-2">
+                            <input type="hidden" name="edit_class" value="1">
+                            <input type="hidden" name="class_id" value="{{ class.class_id }}">
+                            <!-- Additional hidden inputs to populate edit form fields -->
+                            <input type="hidden" name="class_name" value="{{ class.class_name }}">
+                            <input type="hidden" name="description" value="{{ class.description }}">
+                            <input type="hidden" name="level" value="{{ class.level }}">
+                            <input type="hidden" name="duration" value="{{ class.duration }}">
+                            <input type="hidden" name="start_time" value="{{ class.start_time }}">
+                            <input type="hidden" name="capacity" value="{{ class.capacity }}">
+                            <input type="hidden" name="coach_id" value="{{ class.coach_id }}">
+                            <button type="button" class="btn btn-warning btn-sm"
+                            onclick="populateEditForm({
+                                class_id: '{{ class.class_id }}',
+                                class_name: '{{ class.class_name }}',
+                                description: '{{ class.description }}',
+                                level: '{{ class.level }}',
+                                duration: '{{ class.duration }}',
+                                start_time: '{{ class.start_time }}',
+                                capacity: '{{ class.capacity }}',
+                                coach_id: '{{ class.coach_id }}'
+                                 })">
+                                Edit
+                            </button>
+                        </form>
+
+                        <!-- Delete Button/Form -->
+                        <form action="{{ url_for('admin_classes.manage_classes') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this class?');">
+                            <input type="hidden" name="delete_class" value="1">
+                            <input type="hidden" name="class_id" value="{{ class.class_id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Link back to Admin Dashboard at the bottom (optional) -->
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Back to Admin Dashboard</a>
+</div>
+
+<!-- JavaScript function to populate form fields -->
+<script>
+    function populateEditForm(classData) {
+        document.getElementById('class_name').value = classData.class_name;
+        document.getElementById('description').value = classData.description;
+        document.getElementById('level').value = classData.level;
+        document.getElementById('duration').value = classData.duration;
+        document.getElementById('start_time').value = classData.start_time;
+        document.getElementById('capacity').value = classData.capacity;
+        document.getElementById('coach_id').value = classData.coach_id || '';
+
+        // Change the form action to edit the class instead of adding a new one
+        document.querySelector('input[name="add_class"]').name = "edit_class";
+        document.querySelector('input[name="edit_class"]').value = "1";
+        document.querySelector('input[name="class_id"]').value = classData.class_id;
+    }
+</script>
+
+</body>
+</html>

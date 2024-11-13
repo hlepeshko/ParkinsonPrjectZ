@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+</head>
+<body>
+    <h1>Messages</h1>
+
+    <!-- Form to send a new message -->
+    <form method="POST" action="{{ url_for('patient.messages') }}">
+        <label for="coach_id">Send a message to:</label>
+        <select name="coach_id" id="coach_id" required>
+            {% for coach in coaches %}
+                <option value="{{ coach.user_id }}">{{ coach.username }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="message">Message:</label>
+        <textarea name="message" id="message" required></textarea>
+        <br>
+        <button type="submit">Send</button>
+    </form>
+
+    <!-- Display received messages -->
+    <h2>Your Messages</h2>
+    <ul>
+        {% for message in messages %}
+            <li>
+                <strong>{{ message.sender }}</strong>: {{ message.message_content }}
+                <em>({{ message.sent_at }})</em>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - View Patient Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Patient Profile</h2>
+
+        <!-- Profile Information Card -->
+        <div class="card my-4">
+            <div class="card-header">
+                <h5>Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Username:</strong> {{ patient.username }}</p>
+                <p><strong>Email:</strong> {{ patient.email }}</p>
+                <p><strong>Full Name:</strong> {{ patient.first_name }}</p>
+                <p><strong>DOB:</strong> {{ patient.dob }}</p>
+                <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                <p><strong>Contact Number:</strong> {{ patient.phone }}</p>
+                <p><strong>Address:</strong> {{ patient.address }}</p>
+            </div>
+        </div>
+
+        <!-- Inline Edit Form -->
+        <form action="{{ url_for('admin.edit_patient_profile', user_id=patient.user_id) }}" method="POST">
+
+            <!-- Personal Information Card -->
+            <div class="card my-4">
+                <div class="card-header">
+                    <h5>Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" name="username" id="username" value="{{ patient.username }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" value="{{ patient.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" name="first_name" id="first_name" value="{{ patient.first_name }}" required>
+                    </div>
+                     <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" name="dob" id="dob" value="{{ patient.dob }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" name="gender" id="gender" required>
+                            <option value="Male" {% if patient.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if patient.gender == 'Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if patient.gender == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Contact Number</label>
+                        <input type="text" class="form-control" name="phone" id="phone" value="{{ patient.phone }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" name="address" id="address" rows="3">{{ patient.address }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="health_condition" class="form-label">Medical History</label>
+                        <textarea class="form-control" name="health_condition" id="health_condition">{{ patient.health_condition }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Changes</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Medical Information Section -->
+        <div class="card my-4">
+            <div class="card-header">
+                <h5>Medical Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Medical History:</strong></p>
+                <p>{{ patient.health_condition if patient.health_condition else "No medical history provided." }}</p>
+            </div>
+        </div>
+
+        <!-- Admin Actions -->
+        <div class="mt-4">
+
+            <!-- Delete Patient Button in admin_patient_profile.html -->
+            <form action="{{ url_for('admin.admin_dashboard') }}" method="POST" style="display:inline;">
+                <input type="hidden" name="action" value="delete_user">
+                <input type="hidden" name="user_id" value="{{ patient.user_id }}">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this patient?');">Delete Patient</button>
+            </form>
+            <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            </form>
+            <a href="{{ url_for('admin.list_patients') }}" class="btn btn-secondary">Back to Patient List</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

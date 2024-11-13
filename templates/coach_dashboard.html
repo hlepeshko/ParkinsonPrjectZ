@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    
+     <!-- logo -->
+     <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='KatzJCCLogo.png') }}" alt="Katz JCC Logo">
+    </div>
+    <h1>Coach Dashboard</h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-{{ messages[0][0] }}">
+                {{ messages[0][1] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="row mt-4">
+        <!-- Assessment Forms Section -->
+        <div class="col-md-6">
+            <h3>Assessment Forms</h3>
+
+            <!-- Form to Fill Out Assessment Document -->
+            <form method="POST" action="{{ url_for('coach.submit_assessment') }}">
+                <div class="mb-3">
+                    <label for="assessment_name" class="form-label">Assessment Document</label>
+                    <select class="form-select" name="assessment_name" id="assessment_name" required>
+                        <option value="">Select an assessment document</option>
+                        {% for document in documents %}
+                            <option value="{{ document.id }}">{{ document.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="assessment_data" class="form-label">Fill Out the Assessment</label>
+                    <textarea class="form-control" name="assessment_data" id="assessment_data" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Assessment</button>
+            </form>
+        </div>
+
+        <!-- List of Completed Assessments -->
+        <div class="col-md-6">
+            <h3>Completed Assessments</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>Submitted By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assessment in assessments %}
+                        <tr>
+                            <td>{{ assessment.document_name }}</td>
+                            <td>{{ assessment.coach_username }}</td>
+                            <td>
+                                <form action="{{ url_for('coach.view_assessment') }}" method="GET" style="display:inline;">
+                                    <input type="hidden" name="assessment_id" value="{{ assessment.id }}">
+                                    <button type="submit" class="btn btn-info btn-sm">View</button>
+                                </form>
+                                <form action="{{ url_for('coach.delete_assessment') }}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="assessment_id" value="{{ assessment.id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="{{ url_for('coach.logout') }}" class="btn btn-secondary">Logout</a>
+</div>
+
+</body>
+</html>
+

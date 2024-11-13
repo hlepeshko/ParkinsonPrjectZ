@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    border: 1px solid #121111;
+    
+    
+}
+
+th, td {
+    border: 1px solid #121111;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #d35f12;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+button {
+    border: none;
+    color: rgb(255, 255, 255);
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button.view {
+    background-color: #7ad87d;
+}
+
+button.edit {
+    background-color: #2196F3;
+}
+
+button.delete {
+    background-color: #f44336;
+}
+
+button:hover {
+    opacity: 0.8;
+}
